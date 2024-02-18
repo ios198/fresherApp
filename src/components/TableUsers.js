@@ -11,8 +11,8 @@ const TableUsers = (pops) => {
 
   const getUsers = async () => {
     let res = await fetchAllUser();
-    if (res && res.data && res.data.data) {
-      setListUsers(res.data.data);
+    if (res && res.data && res.data) {
+      setListUsers(res.data);
     }
   };
   return (
