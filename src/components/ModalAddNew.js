@@ -1,13 +1,30 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { postCreateUser } from "../service/UserServices";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const ModalAddNew = (props) => {
-  const { show, handleClose } = props;
+  const { show, handleClose, handleUpdateTable } = props;
   const [name, setName] = useState("");
   const [job, setJob] = useState("");
-  const handleSaveUser = () => {
-    console.log("User:", name, "Job:", job);
+  const notifySucess = () => toast.success("Create user sucessfully!");
+  const notifyFaile = () => toast.error("Create user sucessfully!");
+
+  const handleSaveUser = async () => {
+    let res = await postCreateUser(name, job);
+    if (res && res.id) {
+      notifySucess();
+      setName("");
+      setJob("");
+      handleUpdateTable({ first_name: name, id: res.id });
+      handleClose();
+    } else {
+      notifyFaile();
+    }
   };
+
   return (
     <>
       <Modal
@@ -50,6 +67,7 @@ const ModalAddNew = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <ToastContainer autoClose={1000} />
     </>
   );
 };
