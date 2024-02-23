@@ -3,18 +3,26 @@ import Table from "react-bootstrap/Table";
 import { fetchAllUser } from "../service/UserServices";
 import ReactPaginate from "react-paginate";
 import ModalAddNew from "./ModalAddNew";
+import ModalEdit from "./ModalEdit";
 import { Button } from "react-bootstrap";
 const TableUsers = (pops) => {
   const [listUsers, setListUsers] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [selectedUser, setSelectedUser] = useState([]);
+  const [isshowModalNew, setIsshowModalNew] = useState(false);
+  const [isshowModalEdit, setIsshowModalEdit] = useState(false);
   useEffect(() => {
     getUsers(1);
   }, []);
 
-  const [show, setShow] = useState(false);
+  const handleEditClick = (item) => {
+    setSelectedUser(item);
+    setIsshowModalEdit(true);
+  };
   const handleClose = () => {
-    setShow(false);
+    setIsshowModalNew(false);
+    setIsshowModalEdit(false);
   };
 
   const handlePageClick = (event) => {
@@ -34,11 +42,22 @@ const TableUsers = (pops) => {
   const handleUpdateTable = (user) => {
     setListUsers([user, ...listUsers]);
   };
+
+  const handleUpdateEditUser = (id, name) => {
+    //Find index of specific object using findIndex method.
+    const objIndex = listUsers.findIndex((obj) => obj.id === id);
+
+    //Update object's name property.
+    listUsers[objIndex].first_name = name;
+  };
   return (
     <div>
       <div className="my-3 add-new">
         <span>List Users:</span>
-        <Button className="btn btn-sucess" onClick={() => setShow(true)}>
+        <Button
+          className="btn btn-sucess"
+          onClick={() => setIsshowModalNew(true)}
+        >
           Add New User
         </Button>
       </div>
@@ -49,6 +68,7 @@ const TableUsers = (pops) => {
             <th>Email</th>
             <th>First Name</th>
             <th>Last Name</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -61,6 +81,15 @@ const TableUsers = (pops) => {
                   <td>{item.email}</td>
                   <td>{item.first_name}</td>
                   <td>{item.last_name}</td>
+                  <td>
+                    <Button
+                      className="mx-1"
+                      onClick={() => handleEditClick(item)}
+                    >
+                      EDIT
+                    </Button>
+                    <Button className="mx-1">DELETE</Button>
+                  </td>
                 </tr>
               );
             })}
@@ -86,9 +115,16 @@ const TableUsers = (pops) => {
         // eslint-disable-next-line no-unused-vars
       />
       <ModalAddNew
-        show={show}
+        show={isshowModalNew}
         handleClose={handleClose}
         handleUpdateTable={handleUpdateTable}
+      />
+
+      <ModalEdit
+        show={isshowModalEdit}
+        handleClose={handleClose}
+        selectedUser={selectedUser}
+        handleUpdateEditUser={handleUpdateEditUser}
       />
     </div>
   );
