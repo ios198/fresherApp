@@ -4,6 +4,7 @@ import { fetchAllUser } from "../service/UserServices";
 import ReactPaginate from "react-paginate";
 import ModalAddNew from "./ModalAddNew";
 import ModalEdit from "./ModalEdit";
+import ModalDelete from "./ModalDelete";
 import { Button } from "react-bootstrap";
 const TableUsers = (pops) => {
   const [listUsers, setListUsers] = useState([]);
@@ -12,6 +13,7 @@ const TableUsers = (pops) => {
   const [selectedUser, setSelectedUser] = useState([]);
   const [isshowModalNew, setIsshowModalNew] = useState(false);
   const [isshowModalEdit, setIsshowModalEdit] = useState(false);
+  const [isshowModalDelete, setIsshowModalDelete] = useState(false);
   useEffect(() => {
     getUsers(1);
   }, []);
@@ -20,9 +22,16 @@ const TableUsers = (pops) => {
     setSelectedUser(item);
     setIsshowModalEdit(true);
   };
+
+  const handleDeleteClick = (item) => {
+    setSelectedUser(item);
+    setIsshowModalDelete(true);
+  };
+
   const handleClose = () => {
     setIsshowModalNew(false);
     setIsshowModalEdit(false);
+    setIsshowModalDelete(false);
   };
 
   const handlePageClick = (event) => {
@@ -49,6 +58,14 @@ const TableUsers = (pops) => {
 
     //Update object's name property.
     listUsers[objIndex].first_name = name;
+  };
+
+  const handleUpdateDeleteUser = (id) => {
+    console.log("--", id);
+    let filtered = listUsers.filter(function (el) {
+      return el.id !== id;
+    });
+    setListUsers(filtered);
   };
   return (
     <div>
@@ -88,7 +105,12 @@ const TableUsers = (pops) => {
                     >
                       EDIT
                     </Button>
-                    <Button className="mx-1">DELETE</Button>
+                    <Button
+                      className="mx-1"
+                      onClick={() => handleDeleteClick(item)}
+                    >
+                      DELETE
+                    </Button>
                   </td>
                 </tr>
               );
@@ -125,6 +147,12 @@ const TableUsers = (pops) => {
         handleClose={handleClose}
         selectedUser={selectedUser}
         handleUpdateEditUser={handleUpdateEditUser}
+      />
+      <ModalDelete
+        show={isshowModalDelete}
+        handleClose={handleClose}
+        selectedUser={selectedUser}
+        handleUpdateEditUser={handleUpdateDeleteUser}
       />
     </div>
   );

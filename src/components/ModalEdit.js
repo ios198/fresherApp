@@ -9,7 +9,6 @@ const ModalEdit = (props) => {
   const [job, setJob] = useState("");
   const [id, setId] = useState(0);
   const notifySucess = () => toast.success("Edit user sucessfully!");
-  const notifyFaile = () => toast.error("Create user sucessfully!");
   useEffect(() => {
     if (show) {
       setName(selectedUser.first_name);
@@ -19,7 +18,7 @@ const ModalEdit = (props) => {
   }, [selectedUser]);
   const handlEditSelectedUser = async () => {
     let res = await UpdateCreatedUser(id, name, job);
-    handleUpdateEditUser(id, nm);
+    handleUpdateEditUser(id, name);
     notifySucess();
     handleClose();
   };
